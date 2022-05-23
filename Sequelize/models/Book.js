@@ -6,8 +6,15 @@ class Book extends Model {}
 
 Book.init(
   // Define fields/columns on model
-  // An `id` is automatically created by Sequelize, though best practice would be to define the primary key ourselves
-  {
+  { 
+    // Manually define the primary key
+    // An `id` is automatically created by Sequelize if primary key is not defined manually
+    // though best practice would be to define the primary key ourselves
+    book_id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true
+    },
     title: {
       type: DataTypes.STRING
     },
@@ -33,6 +40,9 @@ Book.init(
     sequelize,
     // Set to false to remove `created_at` and `updated_at` fields
     timestamps: false,
+    // Prevent sequelize from renaming the table
+    freezeTableName: true,
+    // Add underscore inside name. for example, isPaperback -> is_paperback
     underscored: true,
     modelName: 'book'
   }
