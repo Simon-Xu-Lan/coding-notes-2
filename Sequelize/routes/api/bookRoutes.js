@@ -94,6 +94,22 @@ router.get('/', (req, res) => {
   });
 });
 
+// GET a book by isbn
+router.get('/:isbn', (req, res) => {
+  // Get one book from the book table
+  Book.findOne(
+    {
+      // Gets the book based on the isbn given in the request parameters
+      where: { 
+        isbn: req.params.isbn 
+      },
+    }
+  ).then((bookData) => {
+    res.json(bookData);
+  });
+});
+
+
 // GET all paperback books
 router.get('/paperbacks', (req, res) => {
   Book.findAll({
@@ -112,6 +128,47 @@ router.get('/paperbacks', (req, res) => {
   });
 });
 
+// ****** CREATE ******
+// Updates book based on its isbn
+router.put('/:isbn', (req, res) => {
+  // Calls the update method on the Book model
+  Book.update(
+    {
+      // All the fields you can update and the data attached to the request body.
+      title: req.body.title,
+      author: req.body.author,
+      isbn: req.body.isbn,
+      pages: req.body.pages,
+      edition: req.body.edition,
+      is_paperback: req.body.is_paperback,
+    },
+    {
+      // Gets the books based on the isbn given in the request parameters
+      where: {
+        isbn: req.params.isbn,
+      },
+    }
+  )
+    .then((updatedBook) => {
+      // Sends the updated book as a json response
+      res.json(updatedBook);
+    })
+    .catch((err) => res.json(err));
+});
 
+// ****** DELETE ******
+// Delete route for a book with a matching isbn
+router.delete('/:isbn', (req, res) => {
+  // Looks for the books based on isbn given in the request parameters and deletes the instance from the database
+  Book.destroy({
+    where: {
+      isbn: req.params.isbn,
+    },
+  })
+    .then((deletedBook) => {
+      res.json(deletedBook);
+    })
+    .catch((err) => res.json(err));
+});
 
 module.exports = router;
