@@ -128,7 +128,7 @@ router.get('/paperbacks', (req, res) => {
   });
 });
 
-// ****** CREATE ******
+// ****** UPDATE ******
 // Updates book based on its isbn
 router.put('/:isbn', (req, res) => {
   // Calls the update method on the Book model
