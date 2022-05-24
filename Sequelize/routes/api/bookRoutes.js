@@ -3,15 +3,17 @@ const router = require('express').Router();
 // Import the model
 const Book = require('../../models/Book');
 
+// ****** CREATE ******
 // CREATE a book
 router.post('/', (req, res) => {
   // Use Sequelize's `create()` method to add a row to the table
   // Similar to `INSERT INTO` in plain SQL
-  Book.create({
-    title: req.body.title,
-    author: req.body.author,
-    is_paperback: true
-  })
+    // Book.create({
+    //   title: req.body.title,
+    //   author: req.body.author,
+    //   is_paperback: true
+    // })
+  Book.create(req.body)
     .then((newBook) => {
       // Send the newly created row as a JSON object
       res.json(newBook);
@@ -82,5 +84,34 @@ router.post('/seed', (req, res) => {
       res.json(err);
     });
 });
+
+// ****** GET ******
+// GET all books
+router.get('/', (req, res) => {
+  // Get all books from the book table
+  Book.findAll().then((bookData) => {
+    res.json(bookData);
+  });
+});
+
+// GET all paperback books
+router.get('/paperbacks', (req, res) => {
+  Book.findAll({
+    // Order by title in ascending order
+    order: ['title'],
+    where: {
+      // Only get books that have this boolean set to TRUE
+      is_paperback: true
+    },
+    attributes: {
+      // Don't include these fields in the returned data
+      exclude: ['is_paperback', 'edition']
+    }
+  }).then((bookData) => {
+    res.json(bookData);
+  });
+});
+
+
 
 module.exports = router;
